@@ -1,8 +1,6 @@
 # Eric Chen - StockApp
 
-A high level overview of the StockApp application is below:
-
-<img width="1535" alt="image" src="assets/StockAppDiagram.png">
+A high level overview of the StockApp application:
 
 It consists of the following components:
 
