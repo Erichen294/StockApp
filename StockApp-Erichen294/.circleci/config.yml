@@ -1,0 +1,31 @@
+version: 2.1
+
+jobs:
+  build-and-fully-test-java:
+    docker:
+      - image: cimg/openjdk:11.0  # Use Java 11
+    steps:
+      - checkout
+      - run:
+          name: Calculate cache key
+          command: |-
+            find . -name 'pom.xml' -o -name 'gradlew*' -o -name '*.gradle*' | \
+                    sort | xargs cat > /tmp/CIRCLECI_CACHE_KEY
+      - restore_cache:
+          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
+      - run:
+          command: gradle clean build
+      - run:
+          command: ./serviceTest.sh
+      - store_test_results:
+          path: build/test-results
+      - save_cache:
+          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
+          paths:
+            - ~/.gradle/caches
+      - store_artifacts:
+          path: build/reports
+workflows:
+  build-and-fully-test:
+    jobs:
+      - build-and-fully-test-java

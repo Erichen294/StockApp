@@ -1,0 +1,42 @@
+plugins {
+	id 'java'
+}
+
+group = 'edu.bu'
+version = '1.0-SNAPSHOT'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	testImplementation platform('org.junit:junit-bom:5.10.0')
+	testImplementation 'org.junit.jupiter:junit-jupiter'
+	implementation project(':stock-app-shared')
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+}
+
+test {
+	useJUnitPlatform()
+}
+
+task runServer(type: JavaExec) {
+	mainClass = 'edu.bu.StockAppServer'
+	classpath = sourceSets.main.runtimeClasspath
+}
+
+task executeServerIntegrationTest(type: Test) {
+	useJUnitPlatform {
+		includeTags "IntegrationTest"
+	}
+}
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(11)
+	}
+}
+
+tasks.withType(JavaCompile) {
+	options.release = 11
+}
